@@ -10,6 +10,8 @@ import {
 } from "./FormElements";
 import useDesigner from "@/app/(dashboard)/hooks/useDesigner";
 import { IdGenerator } from "@/lib/IdGenerator";
+import { Button } from "../ui/button";
+import { BiSolidTrash } from "react-icons/bi";
 
 export default function Designer() {
   const { elements, addElement } = useDesigner();
@@ -71,6 +73,8 @@ export default function Designer() {
 }
 
 function DesignerElementWrapper({ element }: { element: FormElementInstance }) {
+  const [isHover, setIsHover] = useState<boolean>(false);
+  const { removeElement } = useDesigner();
   const DesignerElement = FormElements[element.type].designerComponent;
   const topHalf = useDroppable({
     id: `${element.id}-top`,
@@ -89,7 +93,11 @@ function DesignerElementWrapper({ element }: { element: FormElementInstance }) {
     },
   });
   return (
-    <div className="relative h-[120px] flex flex-col text-foreground hover:cursor-pointer rounded-md ring-1 ring-accent ring-inset">
+    <div
+      onMouseEnter={() => setIsHover(true)}
+      onMouseLeave={() => setIsHover(false)}
+      className="relative h-[120px] flex flex-col text-foreground hover:cursor-pointer rounded-md ring-1 ring-accent ring-inset"
+    >
       <div
         ref={topHalf.setNodeRef}
         className={"absolute w-full h-1/2 rounded-t-md"}
@@ -98,6 +106,24 @@ function DesignerElementWrapper({ element }: { element: FormElementInstance }) {
         ref={bottomHalf.setNodeRef}
         className={cn("absolute w-full bottom-0 h-1/2 rounded-b-md")}
       ></div>
+      {isHover && (
+        <>
+          <div className="absolute right-0 h-full">
+            <Button
+              variant={"outline"}
+              className="flex justify-center h-full border rounded-md rounded-l-none bg-red-500"
+              onClick={() => removeElement(element.id)}
+            >
+              <BiSolidTrash className="h-6 w-6" />
+            </Button>
+          </div>
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 animate-pulse">
+            <p className="text-muted-foreground text-sm">
+              click for properties or drag for move
+            </p>
+          </div>
+        </>
+      )}
       <div className="flex w-full h-[120px] items-center rounded-md bg-accent/40 px-4 py-2 pointer-events-none">
         <DesignerElement elementInstance={element} />
       </div>
