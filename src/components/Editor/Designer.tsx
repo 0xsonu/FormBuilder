@@ -1,6 +1,11 @@
 "use client";
 import React, { useState } from "react";
-import { DragEndEvent, useDndMonitor, useDroppable } from "@dnd-kit/core";
+import {
+  DragEndEvent,
+  useDndMonitor,
+  useDraggable,
+  useDroppable,
+} from "@dnd-kit/core";
 import DesignerSidebar from "./DesignerSidebar";
 import { cn } from "@/lib/utils";
 import {
@@ -92,11 +97,23 @@ function DesignerElementWrapper({ element }: { element: FormElementInstance }) {
       isTopHalfDesignerElement: false,
     },
   });
+
+  const draggable = useDraggable({
+    id: element.id + "-drag-handler",
+    data: {
+      type: element.type,
+      elementId: element.id,
+      isDesignerElement: true,
+    },
+  });
   return (
     <div
       onMouseEnter={() => setIsHover(true)}
       onMouseLeave={() => setIsHover(false)}
       className="relative h-[120px] flex flex-col text-foreground hover:cursor-pointer rounded-md ring-1 ring-accent ring-inset"
+      ref={draggable.setNodeRef}
+      {...draggable.listeners}
+      {...draggable.attributes}
     >
       <div
         ref={topHalf.setNodeRef}
@@ -124,7 +141,12 @@ function DesignerElementWrapper({ element }: { element: FormElementInstance }) {
           </div>
         </>
       )}
-      <div className="flex w-full h-[120px] items-center rounded-md bg-accent/40 px-4 py-2 pointer-events-none">
+      <div
+        className={cn(
+          "flex w-full h-[120px] items-center rounded-md bg-accent/40 px-4 py-2 pointer-events-none opacity-100",
+          isHover && "opacity-30"
+        )}
+      >
         <DesignerElement elementInstance={element} />
       </div>
     </div>
