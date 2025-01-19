@@ -20,7 +20,9 @@ export type FormElement = {
     icon: IconType;
   };
   formComponent: React.FC;
-  propertiesComponent: React.FC;
+  propertiesComponent: React.FC<{
+    elementInstance: FormElementInstance;
+  }>;
 };
 
 type FormElementsType = {

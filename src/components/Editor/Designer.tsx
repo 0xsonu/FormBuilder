@@ -19,7 +19,8 @@ import { Button } from "../ui/button";
 import { BiSolidTrash } from "react-icons/bi";
 
 export default function Designer() {
-  const { elements, addElement } = useDesigner();
+  const { elements, addElement, selectedElement, setSelectedElement } =
+    useDesigner();
   const droppable = useDroppable({
     id: "designer",
     data: {
@@ -45,7 +46,12 @@ export default function Designer() {
   });
   return (
     <div className="flex w-full h-full">
-      <div className="p-4 w-full">
+      <div
+        className="p-4 w-full"
+        onClick={() => {
+          if (selectedElement) setSelectedElement(null);
+        }}
+      >
         <div
           ref={droppable.setNodeRef}
           className={cn(
@@ -79,7 +85,7 @@ export default function Designer() {
 
 function DesignerElementWrapper({ element }: { element: FormElementInstance }) {
   const [isHover, setIsHover] = useState<boolean>(false);
-  const { removeElement } = useDesigner();
+  const { removeElement, selectedElement, setSelectedElement } = useDesigner();
   const DesignerElement = FormElements[element.type].designerComponent;
   const topHalf = useDroppable({
     id: `${element.id}-top`,
@@ -112,6 +118,10 @@ function DesignerElementWrapper({ element }: { element: FormElementInstance }) {
     <div
       onMouseEnter={() => setIsHover(true)}
       onMouseLeave={() => setIsHover(false)}
+      onClick={(e) => {
+        e.stopPropagation();
+        setSelectedElement(element);
+      }}
       className="relative h-[120px] flex flex-col text-foreground hover:cursor-pointer rounded-md ring-1 ring-accent ring-inset"
       ref={draggable.setNodeRef}
       {...draggable.listeners}
@@ -131,7 +141,10 @@ function DesignerElementWrapper({ element }: { element: FormElementInstance }) {
             <Button
               variant={"outline"}
               className="flex justify-center h-full border rounded-md rounded-l-none bg-red-500"
-              onClick={() => removeElement(element.id)}
+              onClick={(e) => {
+                e.stopPropagation();
+                removeElement(element.id);
+              }}
             >
               <BiSolidTrash className="h-6 w-6" />
             </Button>
