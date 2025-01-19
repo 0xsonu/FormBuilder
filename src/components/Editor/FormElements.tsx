@@ -12,7 +12,9 @@ export type FormElementInstance = {
 export type FormElement = {
   construct: (id: string) => FormElementInstance;
   type: ElementsType;
-  designerComponent: React.FC;
+  designerComponent: React.FC<{
+    elementInstance: FormElementInstance;
+  }>;
   designerButton: {
     label: string;
     icon: IconType;
