@@ -12,7 +12,7 @@ import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect } from "react";
-import useDesigner from "@/app/(dashboard)/hooks/useDesigner";
+import useDesigner from "@/hooks/useDesigner";
 import {
   Form,
   FormControl,

@@ -13,7 +13,7 @@ import {
   FormElementInstance,
   FormElements,
 } from "./FormElements";
-import useDesigner from "@/app/(dashboard)/hooks/useDesigner";
+import useDesigner from "@/hooks/useDesigner";
 import { IdGenerator } from "@/lib/IdGenerator";
 import { Button } from "../ui/button";
 import { BiSolidTrash } from "react-icons/bi";

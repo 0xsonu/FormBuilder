@@ -1,5 +1,5 @@
 import React from "react";
-import useDesigner from "@/app/(dashboard)/hooks/useDesigner";
+import useDesigner from "@/hooks/useDesigner";
 import FormElementSidebar from "./FormElementSidebar";
 import PropertiesForm from "./PropertiesForm";
 

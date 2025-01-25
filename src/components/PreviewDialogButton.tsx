@@ -1,6 +1,6 @@
 import { MdPreview } from "react-icons/md";
 import { Button } from "./ui/button";
-import useDesigner from "@/app/(dashboard)/hooks/useDesigner";
+import useDesigner from "@/hooks/useDesigner";
 import {
   Dialog,
   DialogContent,
