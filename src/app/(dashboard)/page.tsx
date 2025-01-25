@@ -70,7 +70,7 @@ function StatsCards({ loading, data }: StatsCardsProps) {
         title="Total Submissions"
         icon={<FaWpforms className="text-yellow-600" />}
         helperText="All time form submissions"
-        value={data?.visits.toLocaleString() ?? ""}
+        value={data?.submissions.toLocaleString() ?? ""}
         loading={loading}
         className="shadow-md shadow-yellow-600"
       />
@@ -78,7 +78,7 @@ function StatsCards({ loading, data }: StatsCardsProps) {
         title="Submissions Rate"
         icon={<HiCursorClick className="text-green-600" />}
         helperText="Visits that resulted in a submission"
-        value={data?.visits.toLocaleString() + "%" || ""}
+        value={data?.submissionsRate.toLocaleString() + "%" || ""}
         loading={loading}
         className="shadow-md shadow-green-600"
       />
@@ -86,7 +86,7 @@ function StatsCards({ loading, data }: StatsCardsProps) {
         title="Bounce Rate"
         icon={<TbArrowBounce className="text-red-600" />}
         helperText="Visits that left without submitting"
-        value={data?.visits.toLocaleString() + "%" || ""}
+        value={data?.bounceRate.toLocaleString() + "%" || ""}
         loading={loading}
         className="shadow-md shadow-red-600"
       />
