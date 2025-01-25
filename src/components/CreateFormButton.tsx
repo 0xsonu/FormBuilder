@@ -28,6 +28,10 @@ function CreateFormButton() {
   const router = useRouter();
   const form = useForm<FormSchemaType>({
     resolver: zodResolver(formSchema),
+    defaultValues: {
+      name: "",
+      description: "",
+    },
   });
 
   async function onSubmit(value: FormSchemaType) {
