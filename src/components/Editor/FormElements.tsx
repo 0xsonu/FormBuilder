@@ -19,7 +19,9 @@ export type FormElement = {
     label: string;
     icon: IconType;
   };
-  formComponent: React.FC;
+  formComponent: React.FC<{
+    elementInstance: FormElementInstance;
+  }>;
   propertiesComponent: React.FC<{
     elementInstance: FormElementInstance;
   }>;

@@ -1,10 +1,7 @@
 "use client";
 
 import { Form } from "@prisma/client";
-import React from "react";
-import { Button } from "../ui/button";
-import { MdOutlinePublish, MdPreview } from "react-icons/md";
-import { HiSaveAs } from "react-icons/hi";
+import React, { useEffect } from "react";
 import Designer from "./Designer";
 import {
   DndContext,
@@ -14,6 +11,10 @@ import {
   useSensors,
 } from "@dnd-kit/core";
 import DragOverlayWrapper from "./DragOverlayWrapper";
+import PreviewDialogButton from "../PreviewDialogButton";
+import PublishFormButton from "../PublishFormButton";
+import SaveFormButton from "../SaveFormButton";
+import useDesigner from "@/app/(dashboard)/hooks/useDesigner";
 
 interface FormBuilderProps {
   form: Form;
@@ -32,6 +33,15 @@ export default function FormBuilder({ form }: FormBuilderProps) {
     },
   });
   const sensors = useSensors(mouseSensor, touchSensor);
+
+  const { setElements } = useDesigner();
+
+  // load saved form
+  useEffect(() => {
+    const elements = JSON.parse(form.content);
+    setElements(elements);
+  }, [form, setElements]);
+
   return (
     <DndContext sensors={sensors}>
       <main className="flex flex-col w-full">
@@ -44,7 +54,7 @@ export default function FormBuilder({ form }: FormBuilderProps) {
             <PreviewDialogButton />
             {!form.published && (
               <>
-                <SaveFormButton />
+                <SaveFormButton id={form.id} />
                 <PublishFormButton />
               </>
             )}
@@ -56,30 +66,5 @@ export default function FormBuilder({ form }: FormBuilderProps) {
       </main>
       <DragOverlayWrapper />
     </DndContext>
-  );
-}
-
-function PreviewDialogButton() {
-  return (
-    <Button variant={"outline"} className="gap-2">
-      <MdPreview className="h-6 w-6" /> Preview
-    </Button>
-  );
-}
-function SaveFormButton() {
-  return (
-    <Button variant={"outline"} className="gap-2">
-      <HiSaveAs className="h-6 w-6" /> Save
-    </Button>
-  );
-}
-function PublishFormButton() {
-  return (
-    <Button
-      variant={"outline"}
-      className="gap-2 text-white bg-gradient-to-r from-indigo-400 to-cyan-400"
-    >
-      <MdOutlinePublish className="h-6 w-6" /> Publish
-    </Button>
   );
 }

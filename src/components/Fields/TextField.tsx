@@ -36,7 +36,7 @@ const properties = {
 export const TextFieldFormElement: FormElement = {
   type,
   designerComponent: DesignerComponent,
-  formComponent: () => null,
+  formComponent: FormComponent,
   propertiesComponent: PropertiesComponent,
   construct: (id: string): FormElementInstance => ({
     id,
@@ -67,6 +67,26 @@ function DesignerComponent({
         {required && <span className="text-red-500">*</span>}
       </Label>
       <Input readOnly disabled placeholder={placeHolder} />
+      {helperText && (
+        <p className="text-muted-foreground text-[0.8rem]">{helperText}</p>
+      )}
+    </div>
+  );
+}
+function FormComponent({
+  elementInstance,
+}: {
+  elementInstance: FormElementInstance;
+}) {
+  const element = elementInstance as CustomInstance;
+  const { placeHolder, label, required, helperText } = element.properties;
+  return (
+    <div className="flex flex-col w-full gap-2">
+      <Label>
+        {label}
+        {required && <span className="text-red-500">*</span>}
+      </Label>
+      <Input placeholder={placeHolder} />
       {helperText && (
         <p className="text-muted-foreground text-[0.8rem]">{helperText}</p>
       )}
