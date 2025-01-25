@@ -33,7 +33,6 @@ function CreateFormButton() {
   async function onSubmit(value: FormSchemaType) {
     try {
       const formId = await CreateForm(value);
-      console.log(formId);
       toast({
         title: "Success",
         description: "Form created successfully",

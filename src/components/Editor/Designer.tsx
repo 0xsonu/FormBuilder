@@ -19,8 +19,13 @@ import { Button } from "../ui/button";
 import { BiSolidTrash } from "react-icons/bi";
 
 export default function Designer() {
-  const { elements, addElement, selectedElement, setSelectedElement } =
-    useDesigner();
+  const {
+    elements,
+    addElement,
+    selectedElement,
+    setSelectedElement,
+    removeElement,
+  } = useDesigner();
   const droppable = useDroppable({
     id: "designer",
     data: {
@@ -34,13 +39,66 @@ export default function Designer() {
       if (!active || !over) return;
       const isDesignerButtonElement =
         active.data.current?.isDesignerButtonElement;
+      const isDesignerDropArea = over.data.current?.isDesignerDropArea;
 
-      if (isDesignerButtonElement) {
+      if (isDesignerButtonElement && isDesignerDropArea) {
         const type = active.data.current?.type as ElementsType;
         const newElement = FormElements[type as ElementsType].construct(
           IdGenerator()
         );
-        addElement(0, newElement);
+        addElement(elements.length, newElement);
+        return;
+      }
+      const isDroppingOverDesignerElementTopHalf =
+        over.data.current?.isTopHalfDesignerElement;
+      const isDroppingOverDesignerElementBottomHalf =
+        over.data.current?.isBottomHalfDesignerElement;
+      const isDroppingOverDesignerElement =
+        isDroppingOverDesignerElementTopHalf ||
+        isDroppingOverDesignerElementBottomHalf;
+      const droppintSidebarElementOverDesignerElement =
+        isDesignerButtonElement && isDroppingOverDesignerElement;
+
+      if (droppintSidebarElementOverDesignerElement) {
+        const type = active.data.current?.type as ElementsType;
+        const newElement = FormElements[type].construct(IdGenerator());
+
+        const overId = over.data?.current?.elementId;
+        const overElementIndex = elements.findIndex((el) => el.id === overId);
+        if (overElementIndex === -1) throw new Error("Element not found");
+        let indexForNewElement = overElementIndex;
+        if (isDroppingOverDesignerElementBottomHalf) {
+          indexForNewElement = overElementIndex + 1;
+        }
+        addElement(indexForNewElement, newElement);
+        return;
+      }
+
+      const isDraggingDesignerElement = active.data.current?.isDesignerElement;
+
+      const draggingDesignerElementOverAnotherDesignerElement =
+        isDroppingOverDesignerElement && isDraggingDesignerElement;
+
+      if (draggingDesignerElementOverAnotherDesignerElement) {
+        const activeId = active.data.current?.elementId;
+        const overId = over.data.current?.elementId;
+
+        const activeElementIndex = elements.findIndex(
+          (el) => el.id === activeId
+        );
+        const overElementIndex = elements.findIndex((el) => el.id === overId);
+
+        if (activeElementIndex === -1 || overElementIndex === -1)
+          throw new Error("Element not found");
+
+        const activeElement = { ...elements[activeElementIndex] };
+        removeElement(activeId);
+
+        let indexForNewElement = overElementIndex;
+        if (isDroppingOverDesignerElementBottomHalf) {
+          indexForNewElement = overElementIndex + 1;
+        }
+        addElement(indexForNewElement, activeElement);
       }
     },
   });
@@ -91,7 +149,7 @@ function DesignerElementWrapper({ element }: { element: FormElementInstance }) {
     id: `${element.id}-top`,
     data: {
       type: element.type,
-      id: element.id,
+      elementId: element.id,
       isTopHalfDesignerElement: true,
     },
   });
@@ -99,8 +157,8 @@ function DesignerElementWrapper({ element }: { element: FormElementInstance }) {
     id: `${element.id}-bottom`,
     data: {
       type: element.type,
-      id: element.id,
-      isTopHalfDesignerElement: false,
+      elementId: element.id,
+      isBottomHalfDesignerElement: true,
     },
   });
 
@@ -130,11 +188,11 @@ function DesignerElementWrapper({ element }: { element: FormElementInstance }) {
       <div
         ref={topHalf.setNodeRef}
         className={"absolute w-full h-1/2 rounded-t-md"}
-      ></div>
+      />
       <div
         ref={bottomHalf.setNodeRef}
         className={cn("absolute w-full bottom-0 h-1/2 rounded-b-md")}
-      ></div>
+      />
       {isHover && (
         <>
           <div className="absolute right-0 h-full">
